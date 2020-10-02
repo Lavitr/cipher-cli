@@ -1,0 +1,23 @@
+{
+  "name": "cipher-cli",
+  "version": "1.0.0",
+  "description": "First task of Node course",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lavitr/cipher-cli.git"
+  },
+  "author": "Ron Lavit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Lavitr/cipher-cli/issues"
+  },
+  "homepage": "https://github.com/Lavitr/cipher-cli#readme",
+  "dependencies": {
+    "commander": "^6.1.0",
+    "through2": "^4.0.2"
+  }
+}
