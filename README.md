@@ -15,7 +15,7 @@ npm install
 -o, --output: an output file
 -a, --action: an action encode/decode
 
-### Usage example:
+### Command example:
 
 ```
 $ node index -a encode -s 7 -i "./ex.txt" -o "./out.txt"
