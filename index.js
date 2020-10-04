@@ -12,41 +12,40 @@ const encr = through2(function (chunk, enc, callback) {
     callback()
 })
 
-console.log('args!!::', shift, action, inputFile, outputFile)
-
 if (typeof inputFile !== 'string' && typeof outputFile !== 'string') {
-    console.log('1')
     process.stdin.pipe(encr).pipe(process.stdout)
-}
-
-else if (typeof inputFile !== 'string') {
-    console.log('2')
-    const writeStream = fs.createWriteStream(path.resolve(__dirname, outputFile), { 'flags': 'a' });
-    writeStream.on('error', function (err) {
-        console.error('Error creating write stream', err);
-        process.exit(9);
+} else if (typeof inputFile !== 'string') {
+    fs.access(path.resolve(__dirname, outputFile), fs.constants.F_OK | fs.constants.W_OK, (err) => {
+        if (err) {
+            console.error(
+                `${path.resolve(__dirname, outputFile)} ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`);
+        } else {
+            process.stdin
+                .pipe(encr)
+                .pipe(fs.createWriteStream(path.resolve(__dirname, outputFile), { 'flags': 'a' }))
+        }
     });
-    process.stdin
-        .pipe(encr)
-        .pipe(writeStream)
-}
-else if (typeof outputFile !== 'string') {
-    console.log('3')
+} else if (typeof outputFile !== 'string') {
     const readStream = fs.createReadStream(path.resolve(__dirname, inputFile));
     readStream.on('error', function (err) {
         console.error(`"${inputFile}": is wrong path to input file`);
         process.exit(9);
     });
     readStream.pipe(encr).pipe(process.stdout);
-}
-else {
-    console.log('4')
-    const readStream = fs.createReadStream(path.resolve(__dirname, inputFile));
-    readStream.on('error', function (err) {
-        console.error(`"${inputFile}": is wrong path to input file`);
-        process.exit(9);
+} else {
+    fs.access(path.resolve(__dirname, outputFile), fs.constants.F_OK | fs.constants.W_OK, (err) => {
+        if (err) {
+            console.error(
+                `${path.resolve(__dirname, outputFile)} ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`);
+        } else {
+            const readStream = fs.createReadStream(path.resolve(__dirname, inputFile));
+            readStream.on('error', function (err) {
+                console.error(`"${inputFile}": is wrong path to input file`);
+                process.exit(9);
+            });
+            readStream
+                .pipe(encr)
+                .pipe(fs.createWriteStream(path.resolve(__dirname, outputFile), { 'flags': 'a' }))
+        }
     });
-    readStream
-        .pipe(encr)
-        .pipe(fs.createWriteStream(path.resolve(__dirname, outputFile), { 'flags': 'a' }))
 }
